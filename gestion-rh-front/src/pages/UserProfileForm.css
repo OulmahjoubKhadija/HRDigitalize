@@ -1,0 +1,137 @@
+.profile-completion-form {
+  max-width: 480px;
+  margin: 60px auto;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-completion-form h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #1f2937;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* Inputs & Select */
+.profile-completion-form input,
+.profile-completion-form select {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profile-completion-form input::placeholder {
+  color: #9ca3af;
+}
+
+.profile-completion-form input:focus,
+.profile-completion-form select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* Error messages */
+.profile-completion-form .error {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: -8px;
+  margin-bottom: 4px;
+}
+
+/* Submit button */
+.profile-completion-form button {
+  margin-top: 10px;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.profile-completion-form button:hover {
+  background: #1d4ed8;
+}
+
+.profile-completion-form button:active {
+  transform: scale(0.98);
+}
+
+.profile-completion-form button:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .profile-completion-form {
+    margin: 20px;
+    padding: 24px;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-group input[type="file"] {
+  font-size: 13px;
+}
+.page-content {
+  padding-top: 80px; /* leaves space under navbar */
+  display: flex;
+  justify-content: center; /* horizontally center */
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* text aligned left */
+  background: #f8f9fa; /* light background */
+  border-left: 4px solid #0d6efd; /* accent color */
+  padding: 20px 25px; /* more padding for better look */
+  margin-bottom: 20px;
+  border-radius: 8px;
+  max-width: 550px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* subtle shadow */
+  color: #212529; /* darker text */
+}
+
+.box strong {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  color: #0d6efd;
+}
+
+.box p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+}
+
+.box em {
+  font-style: italic;
+  color: #6c757d;
+  font-size: 1rem; 
+}

@@ -1,0 +1,437 @@
+/* ActivateAccount.css - Account Activation Page Styling */
+
+/* ===== Main Container ===== */
+.activate-page-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+}
+
+/* ===== Activation Form Container ===== */
+.activate-form-container {
+  width: 100%;
+  max-width: 480px;
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Decorative Elements */
+.activate-form-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+}
+
+/* Form Header */
+.activate-form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.activate-form-header h2 {
+  color: #1b4965;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.activate-form-header p {
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Info Icon */
+.activate-info-icon {
+  background: linear-gradient(135deg, #097452 0%, #10b981 100%);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+}
+
+/* ===== Activation Form ===== */
+.activate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Input Groups */
+.activate-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activate-input-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #475569;
+  margin-left: 0.3rem;
+}
+
+.activate-input-group input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.activate-input-group input:focus {
+  border-color: #059669;
+  background-color: white;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+.activate-input-group input::placeholder {
+  color: #94a3b8;
+}
+
+/* Password Input Container */
+.activate-password-container {
+  position: relative;
+}
+
+.activate-toggle-password-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.activate-toggle-password-btn:hover {
+  color: #059669;
+}
+
+/* ===== Messages ===== */
+.activate-error {
+  color: #dc2626;
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  background-color: #fef2f2;
+  border-radius: 8px;
+  border-left: 4px solid #dc2626;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+.activate-error::before {
+  content: "⚠️";
+  font-size: 0.9rem;
+}
+
+.activate-success {
+  color: #059669;
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  background-color: #d1fae5;
+  border-radius: 8px;
+  border-left: 4px solid #059669;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideIn 0.3s ease-out;
+}
+
+.activate-success::before {
+  content: "✅";
+  font-size: 0.9rem;
+}
+
+/* ===== Activation Steps ===== */
+.activation-steps {
+  background-color: #f8fafc;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #1b4965;
+}
+
+.activation-steps h3 {
+  color: #1b4965;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.activation-steps ol {
+  padding-left: 1.2rem;
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.activation-steps li {
+  margin-bottom: 0.5rem;
+}
+
+/* ===== Submit Button ===== */
+.activate-submit-btn {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.activate-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
+}
+
+.activate-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.activate-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== Loading Spinner ===== */
+.activate-loading-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Back Link ===== */
+.activate-back-link {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.activate-back-link a {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  transition: color 0.3s ease;
+}
+
+.activate-back-link a:hover {
+  color: #1b4965;
+  text-decoration: underline;
+}
+
+/* ===== Code Input Specific ===== */
+.code-input-group {
+  position: relative;
+}
+
+.code-hint {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-top: 0.3rem;
+  margin-left: 0.3rem;
+}
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 480px) {
+  .activate-form-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .activate-form-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .activate-input-group input {
+    padding: 0.9rem 1rem;
+  }
+
+  .activate-submit-btn {
+    padding: 0.9rem;
+  }
+
+  .activation-steps {
+    padding: 1.2rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .activate-form-container {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.activate-info-icon {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+
+.activate-resend-code {
+  text-align: center;
+  margin-top: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  border: 2px dashed #cbd5e1;
+}
+
+.activate-resend-code p {
+  color: #475569;
+  margin-bottom: 15px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.activate-resend-code button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #488aec 0%, #278adb 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 250px;
+}
+
+.activate-resend-code button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(219, 39, 119, 0.25);
+}
+
+.activate-resend-code button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.activate-resend-code button:disabled {
+  background: #d1d5db;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.resend-icon {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.activate-resend-code button:hover:not(:disabled) .resend-icon {
+  transform: rotate(45deg);
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .activate-resend-code {
+    padding: 15px;
+    margin-top: 20px;
+  }
+  
+  .activate-resend-code p {
+    font-size: 13px;
+  }
+  
+  .activate-resend-code button {
+    padding: 10px 16px;
+    font-size: 13px;
+    min-width: auto;
+    width: 100%;
+  }
+}

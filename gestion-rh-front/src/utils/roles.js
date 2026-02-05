@@ -1,0 +1,12 @@
+export const ROLES = {
+  RH: "RH",
+  SALARIE: "SALARIE",
+  CHEF_SERVICE: "CHEF_SERVICE",
+  STAGIAIRE: "STAGIAIRE",
+};
+
+export const EMPLOYEES = [
+  ROLES.RH,
+  ROLES.SALARIE,
+  ROLES.CHEF_SERVICE,
+];

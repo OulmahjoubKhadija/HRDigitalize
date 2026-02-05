@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Stagiaire extends Model
+{
+    /**
+    * @property \App\Models\User $user
+    */
+
+    use HasFactory;
+
+    protected $table = 'stagiaire';
+
+    protected $fillable = [
+        'user_id',
+        'cin',
+        'nom',
+        'prenom',
+        'sexe',
+        'photo',
+        'email',
+        'telephone',
+        'adresse',
+        'filiere',
+        'cv',
+        'demande_stage',
+        'fiche_reussite',
+        'accord_stage',
+        'entreprise_accueil',
+        'date_debut',
+        'date_fin',
+        'status',
+        'societe_id',
+        'service_id',
+        'encadrant_id',
+    ];
+
+    
+    protected $casts = [
+        'is_active' => 'boolean',
+        'is_archived' => 'boolean',
+    ];
+
+
+    public function stagiaireUser()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function societe()
+    {
+        return $this->belongsTo(Societe::class)->withDefault();
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class)->withDefault();
+    }
+
+    public function encadrant()
+    {
+        return $this->belongsTo(Salarie::class, 'encadrant_id')->withDefault();
+    }
+}
+
+

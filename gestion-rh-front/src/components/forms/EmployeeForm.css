@@ -1,0 +1,463 @@
+/* EmployeeForm.css - Employé Creation Form */
+
+/* ===== Base Container ===== */
+.employee-form-page {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ===== Messages Container (Fixed at top of form) ===== */
+.employee-messages-container {
+  position: sticky;
+  top: 20px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-bottom: 20px;
+}
+
+/* ===== Success Message ===== */
+.employee-success-message {
+  color: #059669;
+  font-size: 1rem;
+  padding: 1.2rem 1.5rem;
+  background-color: #d1fae5;
+  border-radius: 12px;
+  border: 2px solid #10b981;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.employee-success-message::before {
+  content: "✅";
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.employee-success-message::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, #10b981, #059669);
+}
+
+.employee-success-message-content {
+  flex: 1;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.employee-success-message-close {
+  background: none;
+  border: none;
+  color: #059669;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.employee-success-message-close:hover {
+  background-color: rgba(16, 185, 129, 0.1);
+  transform: scale(1.1);
+}
+
+/* ===== Error Message ===== */
+.employee-error-message {
+  color: #dc2626;
+  font-size: 1rem;
+  padding: 1.2rem 1.5rem;
+  background-color: #fef2f2;
+  border-radius: 12px;
+  border: 2px solid #ef4444;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.employee-error-message::before {
+  content: "❌";
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.employee-error-message::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 4px;
+  background: linear-gradient(to bottom, #ef4444, #dc2626);
+}
+
+.employee-error-message-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.employee-error-message-close:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  transform: scale(1.1);
+}
+
+/* ===== Form Container ===== */
+.employee-form-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Form Header */
+.employee-form-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-top: 0.5rem;
+}
+
+.employee-form-header h2 {
+  color: #1b4965;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.employee-form-header p {
+  color: #64748b;
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== Form Layout ===== */
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: relative;
+}
+
+/* Form Grid */
+.employee-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Input Groups */
+.employee-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  width: 100%;
+}
+
+.employee-input-group label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #475569;
+  margin-left: 0.3rem;
+}
+
+/* Required Field Indicator */
+.employee-required-field::after {
+  content: " *";
+  color: #dc2626;
+}
+
+/* Input Fields */
+.employee-input-group input,
+.employee-input-group select {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 1.5px solid #d1d9e6;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  background-color: white;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.employee-input-group input:focus,
+.employee-input-group select:focus {
+  border-color: #1b4965;
+  box-shadow: 0 0 0 3px rgba(27, 73, 101, 0.1);
+}
+
+.employee-input-group input::placeholder {
+  color: #94a3b8;
+  opacity: 0.8;
+}
+
+/* Date Input */
+.employee-input-group input[type="date"] {
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.employee-input-group input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.employee-input-group input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Select Specific Styling */
+.employee-input-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* Disabled Select Styling */
+.employee-input-group select:disabled {
+  background-color: #f8fafc;
+  color: #94a3b8;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+/* Role Select Specific Styling */
+.employee-role-select {
+  background-color: #f8fafc;
+  border-left: 4px solid #1b4965;
+}
+
+/* Select Hint */
+.employee-select-hint {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-top: 0.3rem;
+  margin-left: 0.3rem;
+  font-style: italic;
+}
+
+/* Optional Field Indicator */
+.employee-optional-field {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-style: italic;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
+/* ===== Organization Section ===== */
+.organization-section {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 2px solid #eaeaea;
+}
+
+.organization-section-title {
+  color: #1b4965;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.organization-section-title::before {
+  content: "🏢";
+  font-size: 1.1rem;
+}
+
+/* ===== Submit Button ===== */
+.employee-submit-btn {
+  background-color: #1b4965;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 1rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  margin-top: 1.5rem;
+  box-shadow: 0 2px 5px rgba(27, 73, 101, 0.2);
+  min-width: 200px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.employee-submit-btn:hover:not(:disabled) {
+  background-color: #0d1b2a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(27, 73, 101, 0.25);
+}
+
+.employee-submit-btn:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.employee-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* ===== Loading Spinner ===== */
+.employee-loading-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Animations ===== */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.employee-input-group {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ===== Responsive Styles ===== */
+@media (max-width: 768px) {
+  .employee-form-page {
+    margin: 1rem auto;
+    padding: 0 1rem;
+  }
+
+  .employee-messages-container {
+    position: relative;
+    top: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .employee-form-container {
+    padding: 1.5rem;
+  }
+
+  .employee-form-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .employee-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .organization-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+  }
+
+  .employee-submit-btn {
+    width: 100%;
+    align-self: stretch;
+    text-align: center;
+    padding: 1rem;
+    min-width: auto;
+  }
+
+  .employee-success-message,
+  .employee-error-message {
+    padding: 1rem 1.2rem;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .employee-form-container {
+    padding: 1.2rem;
+  }
+
+  .employee-input-group input,
+  .employee-input-group select {
+    padding: 0.9rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .employee-input-group select {
+    padding-right: 2.2rem;
+    background-position: right 0.8rem center;
+  }
+
+  .employee-success-message,
+  .employee-error-message {
+    padding: 0.9rem 1rem;
+    font-size: 0.9rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .employee-success-message::before,
+  .employee-error-message::before {
+    margin-bottom: 0.2rem;
+  }
+}
