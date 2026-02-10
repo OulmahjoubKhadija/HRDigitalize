@@ -5,6 +5,7 @@ import "./Societe.css";
 export default function CreateSociete() {
   const [formData, setFormData] = useState({
     nom: "",
+    email: "",
     adresse: "",
     telephone: "",
     fax: "",
@@ -51,6 +52,7 @@ export default function CreateSociete() {
     setFormData({
       nom: "",
       adresse: "",
+      email: "",
       telephone: "",
       fax: "",
       activite: "",
@@ -152,6 +154,18 @@ export default function CreateSociete() {
                         required 
                         />
                         <span className="company-field-description">Adresse du siège social</span>
+                    </div>
+                    <div className="company-input-group">
+                        <label className="company-required-field">Email</label>
+                        <input 
+                        name="email" 
+                        placeholder="Email de la société"
+                        value={formData.email} 
+                        onChange={handleChange} 
+                        type="email"
+                        required 
+                        />
+                        <span className="company-field-description">Email officiel de la société</span>
                     </div>
 
                     {/* Logo */}

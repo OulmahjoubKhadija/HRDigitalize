@@ -73,6 +73,7 @@ class StagiaireResource extends JsonResource
                     ];
                 }),
                 'photo' => $this->photo ? '/storage/' . $this->photo : null,
+                'archived_at' => $this->stagiaireUser->archived_at ?? null,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ];

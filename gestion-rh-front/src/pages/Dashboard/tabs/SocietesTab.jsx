@@ -4,9 +4,9 @@ import api from "../../../api/axios";
 
 import ViewSocieteModal from "../../../modals/ViewSocieteModal";
 import EditSocieteModal from "../../../modals/EditSocieteModal";
-import DeleteConfirm from "../../../modals/DeleteSocieteModal";
+import DeleteSocieteModal from "../../../modals/DeleteSocieteModal";
 
-export default function SocieteTab({ deleteSociete }) {
+export default function SocieteTab() {
   const { user } = useAuth();
   const isRH = user?.role === "RH";
 
@@ -40,6 +40,15 @@ export default function SocieteTab({ deleteSociete }) {
     );
   };
 
+  const deleteSociete = async (societe) => {
+    try {
+      await api.delete(`/societe/${societe.id}`);
+      setSocietes((prev) => prev.filter((s) => s.id !== societe.id));
+    } catch (err) {
+      console.error("Erreur lors de la suppression :", err.response?.data || err);
+      alert(err.response?.data?.message || "Erreur inconue");
+    }
+  };
 
   return (
     <>
@@ -47,6 +56,7 @@ export default function SocieteTab({ deleteSociete }) {
         <thead>
           <tr className="bg-gray-100">
             <th className="p-2 border">Nom</th>
+            <th className="p-2 border">Email</th>
             <th className="p-2 border">Activité</th>
             <th className="p-2 border">Actions</th>
           </tr>
@@ -56,6 +66,7 @@ export default function SocieteTab({ deleteSociete }) {
           {societes.map((s) => (
             <tr key={s.id}>
               <td className="p-2 border">{s.nom}</td>
+              <td className="p-2 border">{s.email}</td>
               <td className="p-2 border">{s.activite ?? "-"}</td>
 
               <td className="p-2 border space-x-3">
@@ -111,17 +122,14 @@ export default function SocieteTab({ deleteSociete }) {
       )}
 
       {/* DELETE */}
-      {activeModal === "delete" && (
-        <DeleteConfirm
-          title="Supprimer la société"
-          message={`Voulez-vous vraiment supprimer "${selectedSociete?.nom}" ?`}
-          onConfirm={() => {
-            deleteSociete(selectedSociete.id);
-            closeModal();
-          }}
-          onCancel={closeModal}
+      {activeModal === "delete" && selectedSociete && (
+        <DeleteSocieteModal
+          societe={selectedSociete}
+          onClose={closeModal}
+          onConfirm={deleteSociete}
         />
       )}
+
     </>
   );
 }

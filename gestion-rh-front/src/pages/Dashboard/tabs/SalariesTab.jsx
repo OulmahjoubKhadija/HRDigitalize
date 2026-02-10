@@ -37,14 +37,14 @@ export default function SalarieTab() {
         params: { search: searchQuery, per_page: perPage, page: pageNumber },
       });
 
-      const data = res.data.data ?? res.data;
-      setSalaries(data);
-      setTotalPages(res.data.last_page ?? 1);
-      setPage(res.data.current_page ?? 1);
+      setSalaries(res.data.data);
+      setTotalPages(res.data.meta.last_page);
+      setPage(res.data.meta.current_page);
     } catch (err) {
       console.error(err);
     }
   };
+
 
   useEffect(() => {
     fetchSalaries(search, page);
@@ -90,7 +90,6 @@ export default function SalarieTab() {
           placeholder="Rechercher par nom, prénom, CIN, société ou service"
           className="input input-bordered w-full max-w-sm"
         />
-        <button className="btn btn-primary" onClick={() => fetchSalaries(search, 1)}>Rechercher</button>
       </div>
 
       {/* Salarie table */}
@@ -144,7 +143,7 @@ export default function SalarieTab() {
       {/* Pagination */}
       <div className="mt-4 flex justify-center space-x-2">
         <button className="btn btn-outline" onClick={() => setPage(prev => Math.max(prev - 1, 1))} disabled={page <= 1}>Précédent</button>
-        <span className="px-2 py-1 border rounded">{page} / {totalPages}</span>
+        <span className="px-2 py-1 border rounded"> Page {page} / {totalPages}</span>
         <button className="btn btn-outline" onClick={() => setPage(prev => Math.min(prev + 1, totalPages))} disabled={page >= totalPages}>Suivant</button>
       </div>
 

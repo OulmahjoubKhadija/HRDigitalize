@@ -16,6 +16,7 @@ class Salarie extends Model
     protected $table = 'salarie';
 
     protected $fillable = [
+        'user_id',
         'cin',
         'nom',
         'prenom',
@@ -33,9 +34,6 @@ class Salarie extends Model
         'status',
         'societe_id',
         'service_id',
-    ];
-    protected $hidden = [
-        'password',
     ];
 
     

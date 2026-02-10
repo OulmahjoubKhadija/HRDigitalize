@@ -171,6 +171,7 @@ export default function EditSalarieModal({ salarie, onClose, updateSalarieInStat
           <option value="suspendu">Suspendu</option>
           <option value="demissionne">Démissioné</option>
           <option value="archive">Archivé</option>
+          <option value="licencie">Licencié</option>
         </select>
 
         <label>Date d'embauche</label>

@@ -62,7 +62,8 @@ class SalarieResource extends JsonResource
                 'photo'     => $this->user->photo ? asset('storage/' . ltrim($this->user->photo, '/')) : null,
                 'cin'       => $this->user->cin ?? null,
             ]),
-
+            'archived_at' => $this->user->archived_at ?? null,
+            
 
         ];
     }

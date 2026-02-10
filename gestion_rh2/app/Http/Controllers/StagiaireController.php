@@ -185,35 +185,36 @@ class StagiaireController extends Controller
         $search = $request->query('search');
         $perPage = $request->query('per_page', 10);
 
-        $stagiaires = Stagiaire::with(['societe', 'service', 'stagiaireUser', 'encadrant'])
-            // Only active users
-            ->whereHas('stagiaireUser', function($q) {
+        $query = Stagiaire::with(['societe', 'service', 'stagiaireUser', 'encadrant'])
+            ->whereHas('stagiaireUser', function ($q) {
                 $q->where('is_active', true)
-                  ->where('is_profile_completed', true);
-            })
-            // Search
-            ->when($search, function ($query) use ($search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('nom', 'like', "%$search%")
-                    ->orWhere('prenom', 'like', "%$search%")
-                    ->orWhere('cin', 'like', "%$search%")
-                    ->orWhereHas('societe', function($q2) use ($search) {
-                        $q2->where('nom', 'like', "%$search%");
-                    })
-                    ->orWhereHas('service', function($q3) use ($search) {
-                        $q3->where('nom', 'like', "%$search%");
-                    })
-                    ->orWhereHas('encadrant', function ($q4) use ($search) {
-                      $q4->where('nom', 'like', "%{$search}%")
-                         ->orWhere('prenom', 'like', "%{$search}%")
-                         ->orWhere('cin', 'like', "%{$search}%");
-                  });
-                });
-            })
-            ->paginate($perPage);
+                ->where('is_profile_completed', true);
+            });
 
-            return StagiaireResource::collection($stagiaires);
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nom', 'like', "%{$search}%")
+                ->orWhere('prenom', 'like', "%{$search}%")
+                ->orWhere('cin', 'like', "%{$search}%")
+                ->orWhereHas('societe', fn ($q2) =>
+                    $q2->where('nom', 'like', "%{$search}%")
+                )
+                ->orWhereHas('service', fn ($q3) =>
+                    $q3->where('nom', 'like', "%{$search}%")
+                )
+                ->orWhereHas('encadrant', fn ($q4) =>
+                    $q4->where('nom', 'like', "%{$search}%")
+                        ->orWhere('prenom', 'like', "%{$search}%")
+                        ->orWhere('cin', 'like', "%{$search}%")
+                );
+            });
+        }
+
+        return StagiaireResource::collection(
+            $query->paginate($perPage)
+        );
     }
+
 
     /* =====================================================
      |  SHOW STAGIAIRE
@@ -259,6 +260,7 @@ class StagiaireController extends Controller
 
         $user->update([
             'is_archived' => true,
+            'archived_at' => now(),
             'is_active' => false
         ]);
 
@@ -273,7 +275,7 @@ class StagiaireController extends Controller
     public function archives(Request $request)
     {
         $search = $request->query('search');
-        $perPage = $request->query('per_page', 10);
+        $perPage = $request->query('per_page', 1);
 
         $query = Stagiaire::with(['societe', 'service', 'stagiaireUser'])
             ->whereHas('stagiaireUser', function($q) {
@@ -289,7 +291,12 @@ class StagiaireController extends Controller
             );
         }
 
-            $stagiaires = $query->orderByDesc('id')->paginate($perPage);
+        $stagiaires = $query->orderByDesc('id')->paginate($perPage);
+
+        $stagiaires->getCollection()->transform(function ($stagiaire) {
+            $stagiaire->archived_at = $stagiaire->stagiaireUser->archived_at ?? null;
+            return $stagiaire;
+        });
 
         return StagiaireResource::collection($stagiaires);
     }
@@ -317,6 +324,7 @@ class StagiaireController extends Controller
 
         $user->update([
                 'is_archived' => false,
+                'archived_at' => null,
                 'is_active' => true
             ]);
 
@@ -353,6 +361,23 @@ class StagiaireController extends Controller
     }
 
 
+    public function updateStatus(Request $request, Stagiaire $stagiaire)
+    {
+        $this->authorize('update', $stagiaire);
+
+        $request->validate([
+            'status' => 'required|in:fin-stage,interrompu,archive',
+        ]);
+
+        $stagiaire->update([
+            'status' => $request->status,
+        ]);
+
+        return response()->json([
+            'message' => 'Statut mis à jour.',
+            'status' => $stagiaire->status,
+        ]);
+    }
 
     
 

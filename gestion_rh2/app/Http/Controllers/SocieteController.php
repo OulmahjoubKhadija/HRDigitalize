@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\SocieteResource;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 
 class SocieteController extends Controller
@@ -19,16 +20,20 @@ class SocieteController extends Controller
         $search = $request->query('search');
         $perPage = $request->query('per_page', 10);
 
-        $societes = Societe::when($search, function ($query) use ($search) {
-                $query->where('nom', 'like', "%$search%")
+        $societes = Societe::where('is_archived', false)
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('nom', 'like', "%$search%")
                     ->orWhere('activite', 'like', "%$search%")
                     ->orWhere('telephone', 'like', "%$search%")
                     ->orWhere('fax', 'like', "%$search%");
+                });
             })
             ->paginate($perPage);
 
         return SocieteResource::collection($societes);
     }
+
 
 
 
@@ -53,6 +58,7 @@ class SocieteController extends Controller
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
             'adresse' => 'required|string|max:255',
+            'email'      => 'required|email|unique:societe,email',
             'logo' => 'required|file|mimes:png,svg|max:2048',
             'telephone' => 'required|string|max:50',
             'fax' => 'nullable|string|max:50',
@@ -85,6 +91,7 @@ class SocieteController extends Controller
 
         $validated = $request->validate([
             'nom' => 'sometimes|required|string|max:255',
+            'email'      => 'required|email|unique:societe,email',
             'adresse' => 'sometimes|required|string|max:255',
             'logo' => 'sometimes|nullable|image|max:2048',
             'telephone' => 'sometimes|required|string|max:50',
@@ -120,48 +127,101 @@ class SocieteController extends Controller
     {
         $this->authorize('delete', $societe);
 
-        $hasActiveUsers = $societe->services()
-            ->whereHas('users', function ($q) {
-                $q->where('is_archived', false);
-            })
-            ->exists();
+        // Check active users
+        $hasActiveUsers =
+            $societe->salaries()
+                ->whereHas('user', fn ($q) =>
+                    $q->withoutGlobalScopes()->where('is_active', 1)
+                )
+                ->exists()
+            ||
+            $societe->stagiaires()
+                ->whereHas('stagiaireUser', fn ($q) =>
+                    $q->withoutGlobalScopes()->where('is_active', 1)
+                )
+                ->exists();
 
         if ($hasActiveUsers) {
             return response()->json([
-                'message' => 'Impossible de supprimer la société : utilisateurs actifs liés.'
+                'message' => 'Impossible d’archiver la société : utilisateurs actifs liés.'
             ], 403);
         }
 
-        $societe->delete();
+        DB::transaction(function () use ($societe) {
+
+            // Archive services FIRST
+            foreach ($societe->services as $service) {
+
+                $hasActiveServiceUsers =
+                    $service->salaries()
+                        ->whereHas('user', fn ($q) =>
+                            $q->withoutGlobalScopes()->where('is_active', 1)
+                        )
+                        ->exists()
+                    ||
+                    $service->stagiaires()
+                        ->whereHas('stagiaireUser', fn ($q) =>
+                            $q->withoutGlobalScopes()->where('is_active', 1)
+                        )
+                        ->exists();
+
+                if ($hasActiveServiceUsers) {
+                    throw new \Exception(
+                        "Impossible d’archiver le service {$service->nom} : utilisateurs actifs liés."
+                    );
+                }
+
+                $service->update([
+                    'is_archived' => true,
+                    'archived_at' => now(),
+                ]);
+            }
+
+            // Archive societe LAST
+            $societe->update([
+                'is_archived' => true,
+                'archived_at' => now(),
+            ]);
+        });
 
         return response()->json([
-            'message' => 'Société supprimée avec succès.'
+            'message' => 'Société et services archivés avec succès.'
         ]);
     }
 
 
     // ARCHIVE THE DELETED SOCIETES
-    public function archive(Societe $societe)
+    public function archives(Societe $societe)
     {
-        $this->authorize('update', $societe);
+        $this->authorize('viewArchived', Societe::class);
 
-        $societe->update(['is_archived' => true]);
+        $archivedSociete = Societe::where('is_archived', true)->get();
 
-        foreach ($societe->services as $service) {
-            $hasActiveUsers = $service->users()
-                ->where('is_archived', false)
-                ->exists();
-
-            if (!$hasActiveUsers) {
-                $service->update(['is_archived' => true]);
-            }
-        }
-
-        return response()->json([
-            'message' => 'Société archivée avec succès.'
-        ]);
+        return SocieteResource::collection($archivedSociete);
     }
 
+    // RESTORE THE SOCIETES
+    public function restore(Societe $societe)
+    {
+      $this->authorize('restore', Societe::class); 
+      
+      if (!$societe) {
+        return response()->json(['message' => 'Société introuvable.'], 404);
+      }
 
+      if (!$societe->is_archived) {
+        return response()->json(['message' => 'La société est déjà non archivé.'], 400);
+      }
+
+      $societe->update([
+                'is_archived' => false,
+            ]);
+
+        return response()->json([
+            'message' => 'La société a été restauré avec succès.',
+            'societe_id' => $societe->id
+        ]);
+
+    }
 }
 

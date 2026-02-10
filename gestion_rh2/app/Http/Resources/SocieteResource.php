@@ -22,6 +22,7 @@ class SocieteResource extends JsonResource
 
             // Visible to ALL authenticated users
             'nom'       => $this->nom,
+            'email'     => $this->email,
             'activite'  => $this->activite,
             'telephone' => $this->telephone,
             'fax'       => $this->fax,
@@ -36,6 +37,7 @@ class SocieteResource extends JsonResource
             'rc'      => $this->when($isRH, $this->rc),
             'ice'     => $this->when($isRH, $this->ice),
             'patente' => $this->when($isRH, $this->patente),
+            'archived_at' => $this->when($isRH, $this->archived_at),
 
             // Optional metadata (RH only – you can remove if not needed)
             'created_at' => $this->when($isRH, $this->created_at),

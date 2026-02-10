@@ -82,7 +82,7 @@ class SalarieController extends Controller
             $activationCode = Str::upper(Str::random(8));
 
             // Create user
-            User::create([
+            $user = User::create([
                 'salarie_id' => $salarie->id,
                 'name'       => $salarie->nom. ' ' . $salarie->prenom,
                 'email'      => $salarie->email,
@@ -92,6 +92,10 @@ class SalarieController extends Controller
                 'is_active'  => false,
                 'role'       => $salarie->role,
             ]);
+
+            // Set user_id on salarie
+            $salarie->user_id = $user->id;
+            $salarie->save();
 
             DB::commit();
 
@@ -212,7 +216,7 @@ class SalarieController extends Controller
             'service_id'    => 'sometimes|exists:service,id',
             'date_embauche' => 'sometimes|date',
             'cin'           => 'sometimes|nullable|string|max:20',
-            'status'        => 'sometimes|in:actif,en_conge,suspendu,demissionne,archive',
+            'status'        => 'sometimes|in:actif,en_conge,suspendu,demissionne,archive,licencie',
         ]);
 
         if (empty($validated)) {
@@ -274,6 +278,7 @@ class SalarieController extends Controller
     //Archive instead of delete
     $user->update([
         'is_archived' => true,
+        'archived_at' => now(),
         'is_active' => false
     ]);
 
@@ -307,6 +312,11 @@ class SalarieController extends Controller
 
         $salaries = $query->orderByDesc('id')->paginate($perPage);
 
+        $salaries->getCollection()->transform(function ($salarie) {
+            $salarie->archived_at = $salarie->user->archived_at ?? null;
+            return $salarie;
+        });
+
         return SalarieResource::collection($salaries);
     }
 
@@ -329,6 +339,7 @@ class SalarieController extends Controller
 
         $user->update([
                 'is_archived' => false,
+                'archived_at' => null,
                 'is_active' => true
             ]);
 
@@ -342,26 +353,43 @@ class SalarieController extends Controller
        PREMANENTLY DELETE THE SALARIE
     ================================== */
     public function forceDelete(Salarie $salarie)
-{
-    $this->authorize('delete', $salarie);
+    {
+        $this->authorize('delete', $salarie);
 
-    $user = $salarie->user;
+        $user = $salarie->user;
 
-    if ($user && !$user->is_archived) {
+        if ($user && !$user->is_archived) {
+            return response()->json([
+                'message' => 'Vous devez d’abord archiver le salarié avant de le supprimer définitivement.'
+            ], 400);
+        }
+
+        if ($user) $user->delete();
+
+        $salarie->delete();
+
         return response()->json([
-            'message' => 'Vous devez d’abord archiver le salarié avant de le supprimer définitivement.'
-        ], 400);
+            'message' => 'Le salarié a été supprimé définitivement.'
+        ]);
     }
 
-    if ($user) $user->delete();
+     public function updateStatus(Request $request, Salarie $salarie)
+     {
+         $this->authorize('update', $salarie);
 
-    $salarie->delete();
+         $request->validate([
+             'status' => 'required|in:suspendu,demissionne,archive,licencie',
+         ]);
 
-    return response()->json([
-        'message' => 'Le salarié a été supprimé définitivement.'
-    ]);
-}
+         $salarie->update([
+             'status' => $request->status,
+         ]);
 
+         return response()->json([
+             'message' => 'Statut mis à jour.',
+             'status' => $salarie->status,
+         ]);
+     }
 
 
     /* ==========================
@@ -378,7 +406,11 @@ class SalarieController extends Controller
         $salarie = $user->salarie;
 
         if (!$salarie) {
-            return response()->json(['message' => 'Aucun profil salarié associé'], 404);
+            return response()->json([
+                'message' => 'Aucun profil salarié associé',
+                'user_id'=>$user->id,
+            ], 404);
+        Log::info('Completing profile for', ['salarie_id'=>$salarie->id]);
         }
 
         $this->authorize('update', $salarie);
@@ -474,7 +506,7 @@ class SalarieController extends Controller
         if ($user->role === 'RH') {
             $rules += [
                 'date_embauche' => 'sometimes|nullable|date',
-                'status'        => 'sometimes|in:actif,en_conge,suspendu,demissionne,archive',
+                'status'        => 'sometimes|in:actif,en_conge,suspendu,demissionne,archive,licencie',
                 'societe_id'    => 'sometimes|nullable|exists:societe,id',
                 'service_id'    => 'sometimes|nullable|exists:service,id',
                 'poste'         => 'sometimes|nullable|string|max:100',

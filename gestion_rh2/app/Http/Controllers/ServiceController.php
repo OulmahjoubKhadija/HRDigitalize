@@ -10,18 +10,19 @@ class ServiceController extends Controller
 {
     // GET /service
     public function index(Request $request)
-{
-    $search = $request->query('search');
-    $perPage = $request->query('per_page', 10);
+    {
+        $search = $request->query('search');
+        $perPage = $request->query('per_page', 10);
 
-    $services = Service::with('societe')
-        ->when($search, function ($query) use ($search) {
-            $query->where('nom', 'like', "%$search%");
-        })
-        ->paginate($perPage);
+        $services = Service::with('societe')
+            ->where('is_archived', false) 
+            ->when($search, function ($query) use ($search) {
+                $query->where('nom', 'like', "%$search%");
+            })
+            ->paginate($perPage);
 
-    return response()->json($services);
-}
+        return response()->json($services);
+    }
 
 
     // GET /service/{id} (get service by ID)
@@ -72,7 +73,7 @@ class ServiceController extends Controller
         return response()->json(['message' => 'Service mis à jour', 'service' => $service]);
     }
 
-    // DELETE /service/{id}
+    // SOFT DELETE /service/{id}
     public function destroy(Service $service)
     {
         $user = auth()->user();
@@ -83,23 +84,21 @@ class ServiceController extends Controller
 
         // Check if any active salaries linked to this service
         $hasActiveSalaries = $service->salaries()
+            ->whereNotNull('user_id')
             ->whereHas('user', function ($query) {
-                $query->where('is_active', true);
+                $query->withoutGlobalScopes()
+                      ->where('is_active', true);
             })
             ->exists();
 
         // Check if any active stagiaires linked to this service
         $hasActiveStagiaires = $service->stagiaires()
+            ->whereNotNull('user_id')
             ->whereHas('stagiaireUser', function ($query) {
-                $query->where('is_active', true);
+                $query->withoutGlobalScopes()
+                      ->where('is_active', 1);
             })
             ->exists();
-
-            $activeSalaries = $service->salaries()->with('user')->get();
-
-            foreach ($activeSalaries as $s) {
-                Log::info('Salarie: '.$s->nom.' - UserID: '.$s->user_id.' - User Active: '.($s->user?->is_active ? 'true' : 'false'));
-            }
 
 
         if ($hasActiveSalaries || $hasActiveStagiaires) {
@@ -111,6 +110,7 @@ class ServiceController extends Controller
         // Archive the service instead of deleting
         $service->update([
             'is_archived' => true,
+            'archived_at' => now(),
         ]);
 
         return response()->json([
@@ -119,7 +119,7 @@ class ServiceController extends Controller
     }
 
     // ARCHIVE THE DELETED SOCIETES
-    public function archives()
+    public function archives(Service $service)
     {
         $user = auth()->user();
 
@@ -127,15 +127,35 @@ class ServiceController extends Controller
             abort(403, "Vous n'êtes pas autorisé(e) à consulter les services archivés.");
         }
 
-        // Fetch all archived services
-        $archivedServices = Service::where('is_archived', true)->get();
-
+        $archivedServices = Service::with(['societe'])
+            ->where('is_archived', true)
+            ->get();
+        
         return response()->json([
             'data' => $archivedServices,
             'message' => 'Services archivés récupérés avec succès.'
         ]);
     }
 
+
+    public function restore($id)
+    {
+        $service = Service::where('id', $id)->where('is_archived', true)->first();
+
+        if (!$service) {
+            return response()->json(['message' => 'Service non trouvé ou déjà actif'], 404);
+        }
+
+        // Restore
+        $service->is_archived = false;
+        $service->archived_at = null;
+        $service->save();
+
+        return response()->json([
+            'data' => $service,
+            'message' => 'Service restauré avec succès.'
+        ]);
+    }
 
 
 }

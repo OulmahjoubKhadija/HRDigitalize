@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -20,6 +21,8 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
+            Log::info('User salarie_id', ['salarie_id' => $user->salarie_id]);
+            Log::info('Salarie exists?', ['salarie' => $user->salarie]);
             return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
         }
 
@@ -50,6 +53,7 @@ class AuthController extends Controller
                 'role' => $user->role,
                 'salarie_id' => $user->salarie_id,
                 'is_profile_completed' => (bool) $user->is_profile_completed,
+                'salarie_id' => $user->salarie_id,
             ],
         ]);
     }
@@ -77,6 +81,12 @@ class AuthController extends Controller
 
         $activationCode = rand(100000, 999999);
 
+        $salarie = Salarie::create([
+            'email' => $validated['email'],
+            'nom' => $validated['name'],
+            'user_id' => null,
+        ]);
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -85,7 +95,10 @@ class AuthController extends Controller
             'activation_code' => $activationCode,
             'activation_expires_at' => now()->addHours(72),
             'is_active' => false,
+            'salarie_id' => $salarie->id,
         ]);
+        $salarie->user_id = $user->id;
+        $salarie->save();
 
         return response()->json([
             'message' => 'Compte créé. Veuillez activer votre compte.',

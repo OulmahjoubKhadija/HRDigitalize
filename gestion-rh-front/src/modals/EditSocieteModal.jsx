@@ -4,6 +4,7 @@ import { societeService } from "../services/societe.service";
 export default function EditSocieteModal({ societe, onClose, updateSocieteInState }) {
   const [form, setForm] = useState({
     nom: "",
+    email: "",
     activite: "",
     telephone: "",
     logo: null,
@@ -20,6 +21,7 @@ export default function EditSocieteModal({ societe, onClose, updateSocieteInStat
     if (societe) {
       setForm({
         nom: societe.nom || "",
+        email: societe.email || "",
         activite: societe.activite || "",
         telephone: societe.telephone || "",
         logo: null,
@@ -72,6 +74,15 @@ export default function EditSocieteModal({ societe, onClose, updateSocieteInStat
           value={form.nom}
           onChange={handleChange}
           placeholder="Nom"
+          className="input input-bordered w-full mb-2"
+        />
+
+        <label>Email: </label>
+        <input
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+          placeholder="Email"
           className="input input-bordered w-full mb-2"
         />
 

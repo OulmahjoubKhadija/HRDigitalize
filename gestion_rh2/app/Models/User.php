@@ -29,10 +29,12 @@ class User extends Authenticatable implements CanResetPassword
         'is_archived',
         'role',
         'is_profile_completed',
+        'archived_at',
     ];
 
     protected $casts = [
     'activation_expires_at' => 'datetime',
+    'archived_at' => 'datetime',
     'is_profile_completed' => 'boolean',
     'is_active' => 'boolean',
     'is_archived' => 'boolean',
@@ -48,4 +50,10 @@ class User extends Authenticatable implements CanResetPassword
     {
         return $this->hasOne(Salarie::class);
     }
+
+    public function stagiaire()
+    {
+        return $this->hasOne(Stagiaire::class);
+    }
+
 }

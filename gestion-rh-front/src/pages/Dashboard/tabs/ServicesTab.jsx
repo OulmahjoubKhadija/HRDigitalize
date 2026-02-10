@@ -45,13 +45,13 @@ export default function ServicesTab() {
   };
 
   // Delete service
-  const deleteService = async (id) => {
-    if (!confirm("Supprimer ce service ?")) return;
+  const deleteService = async (service) => {
     try {
-      await api.delete(`/service/${id}`);
-      setServices((prev) => prev.filter((s) => s.id !== id));
+      await api.delete(`/service/${service.id}`);
+      setServices((prev) => prev.filter((s) => s.id !== service.id));
     } catch (err) {
       console.error("Erreur lors de la suppression :", err.response?.data || err);
+      alert(err.response?.data?.message || "Erreur inconue");
     }
   };
 
@@ -108,7 +108,7 @@ export default function ServicesTab() {
                   </button>
                   <button
                     className="text-red-600"
-                    onClick={() => deleteService(s.id)}
+                    onClick={() => openModal("delete", s)}
                   >
                     Supprimer
                   </button>
@@ -144,15 +144,9 @@ export default function ServicesTab() {
         />
       )}
 
-      {activeModal === "delete" && (
+      {activeModal === "delete" && selectedService && (
         <DeleteServiceModal
-          title="Supprimer le service"
-          message={`Voulez-vous vraiment supprimer "${selectedService?.nom}" ?`}
-          onConfirm={() => {
-            deleteService(selectedService.id);
-            closeModal();
-          }}
-          onCancel={closeModal}
+          service={selectedService} onClose={closeModal} onConfirm={deleteService}
         />
       )}
     </>

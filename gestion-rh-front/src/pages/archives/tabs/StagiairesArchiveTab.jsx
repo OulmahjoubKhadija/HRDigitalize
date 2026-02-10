@@ -5,6 +5,10 @@ import profile from "../../../assets/profile.webp";
 export default function StagiairesArchiveTab() {
   const [stagiaires, setStagiaires] = useState([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const perPage = 10;
+
   const backendURL = "http://localhost:8000";
 
 
@@ -18,11 +22,39 @@ export default function StagiairesArchiveTab() {
         }
     }
 
+  const formatDate = (date) => {
+  if (!date) return "—";
+
+  return new Date(date).toLocaleString("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
   useEffect(() => {
-    api.get("/stagiaires/archives").then(res => {
+    fetchArchives(currentPage);
+  }, [currentPage]);
+
+  const fetchArchives = async (page = 1) => {
+    try {
+      const res = await api.get("/stagiaires/archives", {
+        params: {
+          page,
+          per_page: perPage,
+        },
+      });
+
       setStagiaires(res.data.data);
-    });
-  }, []);
+      setCurrentPage(res.data.meta.current_page);
+      setLastPage(res.data.meta.last_page);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
 
   const restore = async (id) => {
     await api.patch(`/stagiaires/${id}/restore`);
@@ -37,7 +69,21 @@ export default function StagiairesArchiveTab() {
     setStagiaires(prev => prev.filter(s => s.id !== id));
   };
 
-  /* 🟢 EMPTY STATE */
+    const updateStatus = async (id, status) => {
+      try {
+        await api.patch(`/stagiaires/${id}/status`, { status });
+  
+        setStagiaires(prev =>
+          prev.map(s =>
+            s.id === id ? { ...s, status } : s
+          )
+        );
+      } catch (err) {
+        console.error(err);
+        alert("Erreur lors de la mise à jour du statut");
+      }
+    };
+
   if (stagiaires.length === 0) {
     return (
       <h1 className="text-center text-gray-500 text-lg mt-10">
@@ -46,7 +92,9 @@ export default function StagiairesArchiveTab() {
     );
   }
 
+
   return (
+    <>
     <table className="w-full border">
       <thead>
         <tr className="bg-gray-100">
@@ -62,6 +110,8 @@ export default function StagiairesArchiveTab() {
           <th className="p-2 border">Email</th>
           <th className="p-2 border">Début de stage</th>
           <th className="p-2 border">Fin de stage</th>
+          <th className="border p-2">Statut</th>
+          <th className="border p-2">Archivé le</th>
           <th className="p-2 border">Actions</th>
         </tr>
       </thead>
@@ -82,9 +132,22 @@ export default function StagiairesArchiveTab() {
             <td className="p-2 border">{s.filier?? "-"}</td>
             <td className="p-2 border">{s.telephon?? "-"}</td>
             <td className="p-2 border">{s.email}</td>
-            <td className="p-2 border">{s.date_debut?? "-"}</td>
-            <td className="p-2 border">{s.date_fin?? "-"}</td>
-
+            <td className="p-2 border">{formatDate(s.date_debut)}</td>
+            <td className="p-2 border">{formatDate(s.date_fin)}</td>
+            <td className="border p-2">
+              <select
+                value={s.status}
+                onChange={(e) => updateStatus(s.id, e.target.value)}
+                className="border rounded px-2 py-1 text-sm"
+              >
+                <option value="archive">Archivé</option>
+                <option value="fin-stage">Fin de stage</option>
+                <option value="interrompu">Interrompu</option>
+              </select>
+            </td>
+            <td className="border p-2 text-center text-sm text-gray-600 italic">
+                  {formatDate(s.archived_at)}
+                </td>
             <td className="p-2 border space-x-3">
               <button
                 className="text-green-600"
@@ -104,6 +167,30 @@ export default function StagiairesArchiveTab() {
         ))}
       </tbody>
     </table>
+    {/* Pagination */}
+    <div className="mt-4 flex justify-between items-center">
+      <button
+        className="btn btn-sm"
+        disabled={currentPage === 1}
+        onClick={() => setCurrentPage(p => p - 1)}
+      >
+        Précédent
+      </button>
+
+      <span className="text-sm text-gray-600">
+        Page {currentPage} / {lastPage}
+      </span>
+
+      <button
+        className="btn btn-sm"
+        disabled={currentPage === lastPage}
+        onClick={() => setCurrentPage(p => p + 1)}
+      >
+        Suivant
+      </button>
+    </div>
+
+    </>
   );
 }
 

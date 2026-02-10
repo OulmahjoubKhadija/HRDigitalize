@@ -35,7 +35,7 @@ class SocietePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user): bool
+    public function update(User $user, Societe $societe): bool
     {
         return $user->role === 'RH';
     }
@@ -43,7 +43,7 @@ class SocietePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Societe $societe): bool
+    public function delete(User $user): bool
     {
         return $user->role === 'RH';
     }
@@ -53,10 +53,10 @@ class SocietePolicy
      */
 
 
-    // public function restore(User $user, Societe $societe): bool
-    // {
-    //     //
-    // }
+     public function restore(User $user): bool
+     {
+        return $user ->role === 'RH';
+     }
 
     /**
      * Determine whether the user can permanently delete the model.
@@ -67,4 +67,10 @@ class SocietePolicy
     // {
     //     //
     // }
+
+    public function viewArchived(User $user): bool
+    {
+        return $user->role === 'RH';
+    }
+
 }

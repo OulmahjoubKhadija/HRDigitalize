@@ -20,6 +20,7 @@ export default function ViewSocieteModal({ societe, onClose }) {
         <h2 className="text-xl font-bold mb-4">Détails de la société</h2>
 
         <Field label="Nom: " value={societe.nom} />
+        <Field label="Email: " value={societe.email} />
         <Field label="Activité: " value={societe.activite} />
         <Field label="Téléphone: " value={societe.telephone} />
         <Field label="Fax: " value={societe.fax} />
