@@ -19,6 +19,7 @@ class SocieteFactory extends Factory
         return [
             'nom' => fake()->company(),
             'adresse' => fake()->address(),
+            'email' => fake()->unique()->safeEmail(),
             'logo' => fake()->imageUrl(),
             'telephone' => fake()->phoneNumber(),
             'fax' => fake()->optional()->phoneNumber(),

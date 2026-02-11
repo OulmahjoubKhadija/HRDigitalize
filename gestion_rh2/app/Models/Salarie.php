@@ -46,7 +46,12 @@ class Salarie extends Model
     }
 
     public function demandes(){
-        return $this->hasMany(Demande::class, 'demandeur_id');
+        return $this->morphMany(Demande::class, 'demandeur');
+    }
+
+    public function documentsConcernes()
+    {
+        return $this->morphMany(Demande::class, 'cible');
     }
 
     public function stagiairesEncadres()

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Log;
+use App\Models\Salarie;
 
 class AuthController extends Controller
 {

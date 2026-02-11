@@ -65,6 +65,16 @@ class Stagiaire extends Model
     {
         return $this->belongsTo(Salarie::class, 'encadrant_id')->withDefault();
     }
+
+    public function demandes()
+    {
+        return $this->morphMany(Demande::class, 'demandeur');
+    }
+
+    public function documentsConcernes()
+    {
+        return $this->morphMany(Demande::class, 'cible');
+    }
 }
 
 

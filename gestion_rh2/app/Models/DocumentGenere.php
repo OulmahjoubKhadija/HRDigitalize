@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class DocumentGenere extends Model
 {
     use HasFactory;
+
     protected $table = 'documents_generes';
+
     protected $fillable = [
         'demande_id',
         'format',
-        'fichier_genere',
-        'fichier_pdf',
+        'fichier_path',
+
     ];
 
     public function demande()

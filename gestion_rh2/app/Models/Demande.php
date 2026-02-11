@@ -13,10 +13,12 @@ class Demande extends Model
 
     protected $fillable = [
         'demandeur_id',
+        'demandeur_type',
         'type_document_id',
+        'cible_id',
+        'cible_type',
         'status',
         'format',
-        'cible_id',
         'date_demande',
         'date_validation',
         'commentaire_rh',
@@ -28,7 +30,12 @@ class Demande extends Model
     ];
 
     public function demandeur(){
-        return $this->belongsTo(Salarie::class, 'demandeur_id');
+        return $this->morphTo();
+    }
+
+    public function cible()
+    {
+        return $this->morphTo();
     }
 
     public function typeDocument(){

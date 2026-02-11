@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nom');
             $table->text('description')->nullable();
             $table->enum('cible', ['salarie', 'stagiaire']);
-            $table->enum('cree_par', ['RH', 'SALARIE']);
+            $table->enum('cree_par', ['RH', 'SALARIE', 'CHEF_SERVICE']);
             $table->timestamps();
         });
     }

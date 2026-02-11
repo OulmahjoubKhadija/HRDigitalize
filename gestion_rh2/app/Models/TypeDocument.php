@@ -17,7 +17,7 @@ class TypeDocument extends Model
         'cree_par',
     ];
 
-    public function documentTemplates()
+    public function templates()
     {
         return $this->hasMany(DocumentTemplate::class);
     }

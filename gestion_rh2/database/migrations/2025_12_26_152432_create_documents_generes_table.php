@@ -16,8 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('demande_id')->constrained('demandes')->cascadeOnDelete();
             $table->enum('format', ['pdf', 'docx']);
-            $table->string('fichier_genere')->nullable();
-            $table->string('fichier_pdf')->nullable();
+
+            $table->string('fichier_path');
+
             $table->timestamps();
         });
     }

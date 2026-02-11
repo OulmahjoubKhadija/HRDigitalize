@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('societe_id')->constrained('societe')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('type_document_id')->constrained('type_documents')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
+            
         });
     }
 
